@@ -1,0 +1,32 @@
+{
+  "name": "mood-display",
+  "private": true,
+  "description": "A frontend to display the sentiment of my tweets",
+  "license": "MIT",
+  "sideEffects": false,
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev",
+    "start": "remix-serve build"
+  },
+  "dependencies": {
+    "@remix-run/node": "^1.4.3",
+    "@remix-run/react": "^1.4.3",
+    "@remix-run/serve": "^1.4.3",
+    "@remix-run/dev": "^1.4.3",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "victory": "^36.3.2"
+  },
+  "devDependencies": {
+    "@remix-run/eslint-config": "^1.4.3",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "eslint": "^8.14.0",
+    "typescript": "^4.6.4"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
