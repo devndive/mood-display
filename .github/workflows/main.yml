@@ -1,13 +1,18 @@
-on: [push]
-name: Linux_Container_Workflow
+name: Build image and push to ACR
+
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
         steps:
-        # checkout the repo
-        - name: 'Checkout GitHub Action'
+        - name: 'Checkout repository'
           uses: actions/checkout@main
+        - name: 'Set RELEASE_VERSION'
+          run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF#refs/tags/}
           
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
@@ -21,5 +26,5 @@ jobs:
             username: ${{ secrets.REGISTRY_USERNAME }}
             password: ${{ secrets.REGISTRY_PASSWORD }}
         - run: |
-            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mood/web:${{ github.sha }}
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mood/web:${{ github.sha }}
+            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mood/web:${{ env.RELEASE_VERSION }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mood/web:${{ env.RELEASE_VERSION }}
