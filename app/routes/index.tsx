@@ -3,16 +3,20 @@ import { Fragment } from "react";
 import { VictoryChart, VictoryScatter, VictoryPie, VictoryStack, VictoryArea, VictoryLabel, VictoryLine, VictoryAxis } from "victory";
 
 export async function loader() {
+  console.time("loader");
   const response = await fetch(process.env.SENTIMENT_BACKEND);
+  console.timeLog("loader", "fetch");
   const sentiment = await response.json();
-
-  console.log("Loaded: ", sentiment.data[0].sentiment);
+  console.timeLog("loader", "json");
+  console.timeEnd("loader");
 
   return { data: sentiment.data };
 }
 
 export default function Index() {
+  console.time("Index");
   const { data } = useLoaderData();
+  console.timeLog("Index", "useLoaderData");
 
   let i = 0;
   const lineData = data.map((d: any) => {
@@ -22,8 +26,8 @@ export default function Index() {
       x: i,
       y: d.sentiment.sentiment === "mixed" || d.sentiment.sentiment === "neutral" ? "neutral" : d.sentiment.sentiment,
     }
-
   });
+  console.timeLog("Index", "lineData");
 
   const pieData = [
     { x: "positive", y: data.filter((d: any) => d.sentiment.sentiment === "positive").length },
@@ -31,29 +35,32 @@ export default function Index() {
     { x: "neutral", y: data.filter((d: any) => d.sentiment.sentiment === "neutral").length },
     { x: "mixed", y: data.filter((d: any) => d.sentiment.sentiment === "mixed").length },
   ];
-
+  console.timeLog("Index", "pieData");
 
   const positiveArea = data.map((d: any) => {
     return {
       x: d.id,
       y: d.sentiment.confidenceScores.positive
     }
-  })
+  });
+  console.timeLog("Index", "positiveArea");
 
   const neutral = data.map((d: any) => {
     return {
       x: d.id,
       y: d.sentiment.confidenceScores.neutral
     }
-  })
+  });
+  console.timeLog("Index", "neutral");
 
   const negative = data.map((d: any) => {
     return {
       x: d.id,
       y: d.sentiment.confidenceScores.negative
     }
-  })
-
+  });
+  console.timeLog("Index", "negative");
+  console.timeEnd("Index");
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
