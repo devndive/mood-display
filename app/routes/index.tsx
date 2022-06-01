@@ -1,66 +1,63 @@
 import { useLoaderData } from "@remix-run/react";
 import { Fragment } from "react";
 import { VictoryChart, VictoryScatter, VictoryPie, VictoryStack, VictoryArea, VictoryLabel, VictoryLine, VictoryAxis } from "victory";
+import { map as _map, countBy as _countBy, filter as _filter, sortBy as _sortBy } from "lodash";
 
 export async function loader() {
   console.time("loader");
+
   const response = await fetch(process.env.SENTIMENT_BACKEND);
   console.timeLog("loader", "fetch");
+
   const sentiment = await response.json();
   console.timeLog("loader", "json");
-  console.timeEnd("loader");
 
-  return { data: sentiment.data };
-}
+  _sortBy(sentiment.data, ["id"])
 
-export default function Index() {
-  console.time("Index");
-  const { data } = useLoaderData();
-  console.timeLog("Index", "useLoaderData");
-
-  let i = 0;
-  const lineData = data.map((d: any) => {
-
-    i += 1;
+  const lineData = _map(sentiment.data, (d: any, idx: any) => {
     return {
-      x: i,
+      x: idx,
       y: d.sentiment.sentiment === "mixed" || d.sentiment.sentiment === "neutral" ? "neutral" : d.sentiment.sentiment,
     }
   });
-  console.timeLog("Index", "lineData");
+
+  const counts = _countBy(sentiment.data, (d: any) => d.sentiment.sentiment);
 
   const pieData = [
-    { x: "positive", y: data.filter((d: any) => d.sentiment.sentiment === "positive").length },
-    { x: "negative", y: data.filter((d: any) => d.sentiment.sentiment === "negative").length },
-    { x: "neutral", y: data.filter((d: any) => d.sentiment.sentiment === "neutral").length },
-    { x: "mixed", y: data.filter((d: any) => d.sentiment.sentiment === "mixed").length },
+    { x: "positive", y: counts.positive },
+    { x: "negative", y: counts.negative },
+    { x: "neutral", y: counts.neutral },
+    { x: "mixed", y: counts.mixed },
   ];
-  console.timeLog("Index", "pieData");
 
-  const positiveArea = data.map((d: any) => {
+  const positiveArea = _map(sentiment.data, (d: any) => {
     return {
       x: d.id,
       y: d.sentiment.confidenceScores.positive
     }
   });
-  console.timeLog("Index", "positiveArea");
 
-  const neutral = data.map((d: any) => {
+  const neutral = _map(sentiment.data, (d: any) => {
     return {
       x: d.id,
       y: d.sentiment.confidenceScores.neutral
     }
   });
-  console.timeLog("Index", "neutral");
 
-  const negative = data.map((d: any) => {
+  const negative = _map(sentiment.data, (d: any) => {
     return {
       x: d.id,
       y: d.sentiment.confidenceScores.negative
     }
   });
-  console.timeLog("Index", "negative");
-  console.timeEnd("Index");
+
+  console.timeEnd("loader");
+
+  return { data: sentiment.data, lineData, pieData, positiveArea, negative, neutral };
+}
+
+export default function Index() {
+  const { data, lineData, pieData, positiveArea, negative, neutral } = useLoaderData();
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
@@ -122,12 +119,12 @@ export default function Index() {
       <h2>Tweets classified as negative</h2>
       <table>
         <tbody>
-          {data.filter((d: any) => d.sentiment.sentiment === "negative").map((d: any) => (
+          {_filter(data, (d: any) => d.sentiment.sentiment === "negative").map((d: any) => (
             <Fragment key={d.id}>
               <tr key={d.id} style={{ textAlign: "left" }}>
                 <th colSpan={2} style={{ paddingTop: "20px", paddingBottom: "8px" }}>{d.text}</th>
               </tr>
-              {d.sentiment.sentences.map((s: any) => (
+              {_map(d.sentiment.sentences, (s: any) => (
                 <tr key={`${d.id}-${s.offset}`}>
                   <td>{s.text}</td>
                   <td>{s.sentiment}</td>
