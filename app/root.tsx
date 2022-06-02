@@ -11,6 +11,7 @@ import {
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "My Mood",
+  description: "A container based application to visualize the sentiment of my tweets.",
   viewport: "width=device-width,initial-scale=1",
 });
 
