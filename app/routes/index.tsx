@@ -1,16 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import { Fragment } from "react";
-import { VictoryChart, VictoryScatter, VictoryPie, VictoryStack, VictoryArea, VictoryLabel, VictoryLine, VictoryAxis } from "victory";
+import { VictoryChart, VictoryScatter, VictoryPie, VictoryStack, VictoryArea, VictoryLine, VictoryAxis } from "victory";
 import { map as _map, countBy as _countBy, filter as _filter, sortBy as _sortBy } from "lodash";
 
 export async function loader() {
-  console.time("loader");
-
   const response = await fetch(process.env.SENTIMENT_BACKEND);
-  console.timeLog("loader", "fetch");
 
   const sentiment = await response.json();
-  console.timeLog("loader", "json");
 
   _sortBy(sentiment.data, ["id"])
 
@@ -50,8 +46,6 @@ export async function loader() {
       y: d.sentiment.confidenceScores.negative
     }
   });
-
-  console.timeEnd("loader");
 
   return { data: sentiment.data, lineData, pieData, positiveArea, negative, neutral };
 }
