@@ -17,14 +17,14 @@ jobs:
         - name: 'Login via Azure CLI'
           uses: azure/login@v1
           with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-        - name: 'Build and push image'
-          uses: azure/docker-login@v1
-          with:
-            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
-            username: ${{ secrets.REGISTRY_USERNAME }}
-            password: ${{ secrets.REGISTRY_PASSWORD }}
-        - run: |
-            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mood/web:${{ env.RELEASE_VERSION }}
-            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mood/web:${{ env.RELEASE_VERSION }}
+              client-id: ${{ secrets.AZURE_CLIENT_ID }}
+              tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+              subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+        - name: 'Build image via ACR'
+          run: |
+            az acr build --image mood/web:${{ env.RELEASE_VERSION }} \
+              --resource-group ${{ secrets.RESOURCE_GROUP }} \
+              --registry ${{ secrets.REGISTRY_NAME }} \
+              --platform Linux/arm64 \
+              --file Dockerfile .
