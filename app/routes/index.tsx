@@ -57,13 +57,13 @@ export default function Index() {
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
       <h1>Sentiment analysis of Tweets by @devndive</h1>
       <p>When my mood drops for a longer period of time it is an indicator for me to reflect and change things that make me unhappy. Some of these changes
-        have been to switch jobs, do more sports, go on vacation or even do a sabatical and become a dive instructor.
+        have been to switch jobs, do more sports, go on vacation or even do a sabbatical and become a dive instructor.
       </p>
       <p>I do not tweet a lot but have had some periods of times with a tweet to summarize my day. Taking these tweets and visualizing the sentiment of them
         might give me a heads up on longer periods of not being happy.
       </p>
       <h2>Scatter plot and line chart</h2>
-      <p>These plots to not really show anything I can interpret. Leaving them here since they were my first try.</p>
+      <p>These plots do not really show anything I can interpret. Leaving them here since they were my first try.</p>
       <div style={{ width: "400px", display: "inline-block" }}>
         <VictoryChart
           padding={{ left: 80, top: 40, right: 40, bottom: 40 }}
