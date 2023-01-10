@@ -1,9 +1,5 @@
 name: Build image and push to ACR
 
-permissions:
-      id-token: write
-      contents: read
-
 on:
   push:
     tags:
@@ -40,4 +36,4 @@ jobs:
           with:
             context: .
             push: true
-            tags: ${{ env.RELEASE_VERSION }}
+            tags: ${{ env.REGISTRY }}/mood/web:${{ env.RELEASE_VERSION }}
